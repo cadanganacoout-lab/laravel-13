@@ -3,12 +3,12 @@
 @section('title', 'Daftar Buku')
 
 @section('content')
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <h1 class="h3 mb-0">Daftar Buku</h1>
-    <a href="{{ route('book.create') }}" class="btn btn-primary">+ Tambah Buku</a>
-</div>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="h3 mb-0">Daftar Buku</h1>
+        <a href="{{ route('book.create') }}" class="btn btn-primary">+ Tambah Buku</a>
+    </div>
 
-{{-- <form method="GET" class="mb-3">
+    {{-- <form method="GET" class="mb-3">
     <div class="input-group">
         <input type="text" name="q" value="{{ request('q') }}"
                class="form-control" placeholder="Cari judul atau penulis...">
@@ -16,25 +16,27 @@
     </div>
 </form> --}}
 
-<div class="card">
-    <div class="table-responsive">
-        <table class="table table-striped mb-0" id="myTable">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Judul</th>
-                    <th>Penulis</th>
-                    <th>Tahun</th>
-                    <th class="text-end">Aksi</th>
-                </tr>
-            </thead>
-            {{-- <tbody>
-                @forelse ($book as $item)
+    <div class="card">
+        <div class="table-responsive">
+            <table class="table table-striped mb-0" id="myTable">
+                <thead>
                     <tr>
-                        <td>{{ $iteration}}</td>
+                        <th>#</th>
+                        <th>Judul</th>
+                        <th>Penulis</th>
+                        <th>Tahun</th>
+                        <th>Kategori</th>
+                        <th class="text-end">Aksi</th>
+                    </tr>
+                </thead>
+                {{-- <tbody>
+                @forelse ($books as $item)
+                    <tr>
+                        <td>{{ $books->firstItem() + $loop->index }}</td>
                         <td>{{ $item->title }}</td>
                         <td>{{ $item->writer }}</td>
                         <td>{{ $item->publication_year }}</td>
+                        <td>{{ $item->category->name ?? '-' }}</td>
                         <td class="text-end">
                             <a href="{{ route('book.show', $item) }}" class="btn btn-sm btn-info">Detail</a>
                             <a href="{{ route('book.edit', $item) }}" class="btn btn-sm btn-warning">Edit</a>
@@ -53,11 +55,11 @@
                     </tr>
                 @endforelse
             </tbody> --}}
-        </table>
+            </table>
+        </div>
     </div>
-</div>
 
-{{-- <div class="mt-3">
+    {{-- <div class="mt-3">
     {{ $book->links() }}
 </div> --}}
 @endsection
@@ -65,25 +67,41 @@
 @push('coba-script')
     <script>
         $('#myTable').DataTable({
-        // layout: {
-        //     topStart: {
-        //         buttons: ['copy', 'csv', 'excel', 'pdf', 'print']
-        //     }
-        // },
-        ajax: {
-            url: "{{ route('book.datatable') }}",
-            dataSrc: 'data'
-        },
-        columns: [
-            { "data": "DT_RowIndex",
-                orderable: false,
-                searchable: false,
-             },
-            { data: 'title' },
-            { data: 'writer' },
-            { data: 'publication_year' },
-            { data: 'action' } // Bisa membaca nested JSON object
-        ]
-    });
+            // layout: {
+            //     topStart: {
+            //         buttons: ['copy', 'csv', 'excel', 'pdf', 'print']
+            //     }
+            // },
+            ajax: {
+                url: "{{ route('book.datatable') }}",
+                dataSrc: 'data'
+            },
+            columns: [{
+                    "data": "DT_RowIndex",
+                    orderable: false,
+                    searchable: false,
+                },
+                {
+                    data: 'title'
+                },
+                {
+                    data: 'writer'
+                },
+                {
+                    data: 'publication_year'
+                },
+
+                {
+                    data: 'category',
+                    render: function(data, type, row) {
+                        return data ? data.name : '-';
+                    }
+                },
+
+                {
+                    data: 'action'
+                } // Bisa membaca nested JSON object
+            ]
+        });
     </script>
 @endpush
